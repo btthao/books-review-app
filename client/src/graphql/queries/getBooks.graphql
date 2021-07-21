@@ -1,0 +1,12 @@
+query GetBooks($getBooksCursor: Int) {
+  getBooks(cursor: $getBooksCursor) {
+    books {
+      id
+      title
+      author
+      plotSnippet
+      rating
+    }
+    moreBooks
+  }
+}

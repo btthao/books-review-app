@@ -1,0 +1,8 @@
+fragment BookData on Book {
+  id
+  title
+  author
+  plot
+  year
+  rating
+}

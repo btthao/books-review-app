@@ -1,0 +1,8 @@
+mutation CreateBook($createBookInput: BookInput!) {
+  createBook(input: $createBookInput) {
+    errors {
+      ...ErrorInfo
+    }
+    book
+  }
+}
