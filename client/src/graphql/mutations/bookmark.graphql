@@ -1,0 +1,3 @@
+mutation Bookmark($bookmarkId: Int!) {
+  bookmark(id: $bookmarkId)
+}

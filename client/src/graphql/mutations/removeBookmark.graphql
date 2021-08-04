@@ -1,0 +1,3 @@
+mutation RemoveBookmark($removeBookmarkId: Int!) {
+  removeBookmark(id: $removeBookmarkId)
+}

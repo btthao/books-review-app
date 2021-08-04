@@ -1,67 +1,40 @@
-import { Formik, Form } from "formik";
-import React, { useEffect, useState } from "react";
-import Input from "../components/Input";
-import {
-  MeDocument,
-  MeQuery,
-  useLoginMutation,
-  useLogoutMutation,
-  useMeQuery,
-} from "../generated/graphql";
-import { formErrors } from "../utils/formErrors";
-import { useRouter } from "next/router";
-import Button from "../components/Button";
-import withApollo from "../utils/withApollo";
 import { useApolloClient } from "@apollo/client";
+import { Form, Formik } from "formik";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import Button from "../components/Button";
+import Input from "../components/Input";
+import NotLoggedIn from "../components/NotLoggedIn";
+import { useLoginMutation, useMeQuery } from "../generated/graphql";
+import { formErrors } from "../utils/formErrors";
+import withApollo from "../utils/withApollo";
 
-interface loginProps {}
-
-const Login: React.FC<loginProps> = ({}) => {
+// done
+const Login: React.FC = () => {
   const router = useRouter();
   const [login] = useLoginMutation();
   const { data, loading } = useMeQuery();
-  const [logout] = useLogoutMutation();
-  const apolloClient = useApolloClient();
   const [firstLoad, setFirstLoad] = useState(true);
+  const apolloClient = useApolloClient();
 
   if (loading) {
     return null;
   }
 
   if (!loading && firstLoad && data?.me) {
-    return (
-      <div className="max-w-md m-auto mt-10 text-center">
-        <p>You're already logged in. Please log out first before continuing.</p>
-        <button
-          type="button"
-          className="px-2 py-1 mt-4 rounded-md bg-teal-200 font-semibold  "
-          onClick={async () => {
-            await logout();
-            await apolloClient.resetStore();
-          }}
-        >
-          Log out
-        </button>
-      </div>
-    );
+    return <NotLoggedIn />;
   }
   return (
-    <div className=" w-full max-w-sm m-auto p-6   ">
+    <div className=" w-10/12 max-w-sm m-auto py-12 px-6  bg-gray-200 rounded-lg my-40  shadow-lg    ">
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
+          setFirstLoad(false);
           const response = await login({
             variables: { loginUserInput: values },
-            update: (cache, { data }) => {
-              cache.writeQuery<MeQuery>({
-                query: MeDocument,
-                data: {
-                  me: data?.loginUser.user,
-                },
-              });
-            },
           });
           if (response.data?.loginUser.user) {
+            await apolloClient.resetStore();
             router.push("/");
           } else if (response.data?.loginUser.errors) {
             setErrors(formErrors(response.data.loginUser.errors));
@@ -69,7 +42,6 @@ const Login: React.FC<loginProps> = ({}) => {
         }}
       >
         {({ isSubmitting }) => {
-          setFirstLoad(false);
           return (
             <Form>
               <Input
@@ -77,14 +49,12 @@ const Login: React.FC<loginProps> = ({}) => {
                 placeholder="usernames are case-sensitive"
               />
               <Input name="password" type="password" placeholder="password" />
-              <div className="mt-6  m-auto">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  text="Login"
-                  rounded
-                />
-              </div>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                text="Login"
+                className="w-full mt-6  bg-rose-300 rounded-3xl"
+              />
             </Form>
           );
         }}

@@ -31,18 +31,27 @@ const Inputs_1 = require("../utils/Inputs");
 const argon2_1 = __importDefault(require("argon2"));
 const Return_1 = require("../utils/Return");
 const constants_1 = require("../utils/constants");
+const typeorm_1 = require("typeorm");
 let UserResolver = class UserResolver {
     me({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(req.session.userId);
             if (!req.session.userId) {
                 return null;
             }
             return User_1.User.findOne(req.session.userId);
         });
     }
-    getUser(id) {
-        return User_1.User.findOne(id);
+    getUserBooks(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield typeorm_1.getRepository(User_1.User)
+                .createQueryBuilder("user")
+                .leftJoinAndSelect("user.booksAdded", "booksadded")
+                .leftJoinAndSelect("user.bookmarks", "bookmarks")
+                .where("user.id = :id", { id })
+                .getOne();
+            console.log(user);
+            return user;
+        });
     }
     registerUser(input, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -104,7 +113,7 @@ let UserResolver = class UserResolver {
         return new Promise((resolve) => req.session.destroy((err) => {
             res.clearCookie(constants_1.COOKIE_NAME);
             if (err) {
-                console.log(err);
+                console.error(err);
                 resolve(false);
                 return;
             }
@@ -131,7 +140,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], UserResolver.prototype, "getUser", null);
+], UserResolver.prototype, "getUserBooks", null);
 __decorate([
     type_graphql_1.Mutation(() => Return_1.LoginRegisterResponse),
     __param(0, type_graphql_1.Arg("input")),

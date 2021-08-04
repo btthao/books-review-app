@@ -13,6 +13,7 @@ exports.User = void 0;
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const Book_1 = require("./Book");
+const Rating_1 = require("./Rating");
 let User = class User extends typeorm_1.BaseEntity {
 };
 __decorate([
@@ -30,9 +31,20 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
+    typeorm_1.OneToMany(() => Rating_1.Rating, (rating) => rating.user),
+    __metadata("design:type", Array)
+], User.prototype, "booksRated", void 0);
+__decorate([
+    type_graphql_1.Field(() => [Book_1.Book], { nullable: true }),
     typeorm_1.OneToMany(() => Book_1.Book, (book) => book.poster),
     __metadata("design:type", Array)
 ], User.prototype, "booksAdded", void 0);
+__decorate([
+    type_graphql_1.Field(() => [Book_1.Book], { nullable: true }),
+    typeorm_1.ManyToMany(() => Book_1.Book, (book) => book.bookmarkedBy),
+    typeorm_1.JoinTable(),
+    __metadata("design:type", Array)
+], User.prototype, "bookmarks", void 0);
 __decorate([
     type_graphql_1.Field(() => String),
     typeorm_1.CreateDateColumn(),

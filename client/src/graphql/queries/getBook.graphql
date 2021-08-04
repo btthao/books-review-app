@@ -1,0 +1,24 @@
+query GetBook($getBookId: Int!) {
+  getBook(id: $getBookId) {
+    id
+    title
+    author
+    plot
+    year
+    totalRaters
+    totalStars
+    bookmarkStatus
+    ratedBy {
+      value
+      userId
+      bookId
+    }
+    bookmarkedBy {
+      id
+    }
+    poster {
+      username
+      id
+    }
+  }
+}

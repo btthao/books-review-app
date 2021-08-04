@@ -3,6 +3,8 @@ mutation CreateBook($createBookInput: BookInput!) {
     errors {
       ...ErrorInfo
     }
-    book
+    book {
+      ...BookData
+    }
   }
 }

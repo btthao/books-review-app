@@ -1,0 +1,3 @@
+mutation RateBook($rateValue: Int!, $rateBookId: Int!) {
+  rate(value: $rateValue, bookId: $rateBookId)
+}

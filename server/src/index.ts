@@ -14,7 +14,8 @@ import { COOKIE_NAME, __prod__ } from "./utils/constants";
 import { CtxTypes } from "./utils/CtxTypes";
 
 // import { User } from "./entities/User";
-//import { Book } from "./entities/Book";
+import { Book } from "./entities/Book";
+import { bookmarkStatusLoader } from "./utils/BookmarkStatusLoader";
 
 const startServer = async () => {
   await createConnection({
@@ -82,6 +83,7 @@ const startServer = async () => {
     context: ({ req, res }): CtxTypes => ({
       req,
       res,
+      bookmarkStatusLoader: bookmarkStatusLoader(),
     }),
   });
 

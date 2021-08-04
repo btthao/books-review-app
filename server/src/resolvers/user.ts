@@ -2,24 +2,48 @@ import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../entities/User";
 import { LoginRegisterInput } from "../utils/Inputs";
 import argon2 from "argon2";
-import { LoginRegisterResponse } from "../utils/Return";
+import { LoginRegisterResponse, UserBooks } from "../utils/Return";
 import { CtxTypes } from "../utils/CtxTypes";
 import { COOKIE_NAME } from "../utils/constants";
+import { createQueryBuilder, getRepository } from "typeorm";
+import { Book } from "src/entities/Book";
 
 @Resolver(User)
 export class UserResolver {
   @Query(() => User, { nullable: true })
   async me(@Ctx() { req }: CtxTypes): Promise<User | undefined | null> {
-    console.log(req.session.userId);
     if (!req.session.userId) {
       return null;
     }
     return User.findOne(req.session.userId);
+    // done
   }
 
   @Query(() => User, { nullable: true })
-  getUser(@Arg("id", () => Int) id: number): Promise<User | undefined> {
-    return User.findOne(id);
+  async getUserBooks(
+    @Arg("id", () => Int) id: number
+  ): Promise<User | undefined> {
+    // const user = await User.findOne(id, {
+    //   relations: ["booksAdded", "bookmarks"],
+    // });
+    // console.log(user);
+
+    const user = await getRepository(User)
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.booksAdded", "booksadded")
+      .leftJoinAndSelect("user.bookmarks", "bookmarks")
+      .where("user.id = :id", { id })
+      .getOne();
+
+    // const user = await getRepository(User)
+    //   .createQueryBuilder("user")
+    //   .leftJoinAndSelect("user.booksAdded", "booksadded")
+    //   .leftJoinAndSelect("user.bookmarks", "bookmarks")
+    //   .where("user.id = :id", { id })
+    //   .getOne();
+    console.log(user);
+
+    return user;
   }
 
   @Mutation(() => LoginRegisterResponse)
@@ -85,6 +109,7 @@ export class UserResolver {
     req.session.userId = user.id;
 
     return { user };
+    // done
   }
 
   @Mutation(() => Boolean)
@@ -93,7 +118,7 @@ export class UserResolver {
       req.session.destroy((err) => {
         res.clearCookie(COOKIE_NAME);
         if (err) {
-          console.log(err);
+          console.error(err);
           resolve(false);
           return;
         }
@@ -101,6 +126,7 @@ export class UserResolver {
         resolve(true);
       })
     );
+    // done
   }
 
   @Mutation(() => Boolean)

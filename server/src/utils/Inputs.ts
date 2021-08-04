@@ -4,8 +4,8 @@ import { InputType, Field } from "type-graphql";
 @InputType()
 export class LoginRegisterInput {
   @Field()
-  @Length(3, 20, {
-    message: "Username must be between 3 and 20 characters.",
+  @Length(3, 10, {
+    message: "Username must be between 3 and 10 characters.",
   })
   username: string;
 

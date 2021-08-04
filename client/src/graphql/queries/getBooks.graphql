@@ -1,11 +1,7 @@
-query GetBooks($getBooksCursor: Int) {
-  getBooks(cursor: $getBooksCursor) {
+query GetBooks($getBooksLimit: Int!, $getBooksCursor: Int) {
+  getBooks(limit: $getBooksLimit, cursor: $getBooksCursor) {
     books {
-      id
-      title
-      author
-      plotSnippet
-      rating
+      ...BookData
     }
     moreBooks
   }

@@ -16,8 +16,8 @@ let LoginRegisterInput = class LoginRegisterInput {
 };
 __decorate([
     type_graphql_1.Field(),
-    class_validator_1.Length(3, 20, {
-        message: "Username must be between 3 and 20 characters.",
+    class_validator_1.Length(3, 10, {
+        message: "Username must be between 3 and 10 characters.",
     }),
     __metadata("design:type", String)
 ], LoginRegisterInput.prototype, "username", void 0);

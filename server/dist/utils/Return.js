@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Pagination = exports.BookReturn = exports.LoginRegisterResponse = exports.Error = void 0;
+exports.UserBooks = exports.Pagination = exports.BookReturn = exports.LoginRegisterResponse = exports.Error = void 0;
 const User_1 = require("../entities/User");
 const type_graphql_1 = require("type-graphql");
 const Book_1 = require("../entities/Book");
@@ -48,8 +48,8 @@ __decorate([
     __metadata("design:type", Array)
 ], BookReturn.prototype, "errors", void 0);
 __decorate([
-    type_graphql_1.Field(() => Boolean, { nullable: true }),
-    __metadata("design:type", Boolean)
+    type_graphql_1.Field(() => Book_1.Book, { nullable: true }),
+    __metadata("design:type", Book_1.Book)
 ], BookReturn.prototype, "book", void 0);
 BookReturn = __decorate([
     type_graphql_1.ObjectType()
@@ -69,4 +69,18 @@ Pagination = __decorate([
     type_graphql_1.ObjectType()
 ], Pagination);
 exports.Pagination = Pagination;
+let UserBooks = class UserBooks {
+};
+__decorate([
+    type_graphql_1.Field(() => [Book_1.Book], { nullable: true }),
+    __metadata("design:type", Array)
+], UserBooks.prototype, "booksAdded", void 0);
+__decorate([
+    type_graphql_1.Field(() => [Book_1.Book], { nullable: true }),
+    __metadata("design:type", Array)
+], UserBooks.prototype, "bookmarks", void 0);
+UserBooks = __decorate([
+    type_graphql_1.ObjectType()
+], UserBooks);
+exports.UserBooks = UserBooks;
 //# sourceMappingURL=Return.js.map

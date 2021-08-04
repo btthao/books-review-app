@@ -1,0 +1,11 @@
+query GetUserBooks($getUserBooksId: Int!) {
+  getUserBooks(id: $getUserBooksId) {
+    ...UserData
+    booksAdded {
+      ...BookData
+    }
+    bookmarks {
+      ...BookData
+    }
+  }
+}

@@ -1,0 +1,3 @@
+mutation EditPlot($editPlotPlot: String!, $editPlotId: Int!) {
+  editPlot(plot: $editPlotPlot, id: $editPlotId)
+}

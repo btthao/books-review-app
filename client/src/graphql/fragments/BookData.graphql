@@ -1,8 +1,9 @@
 fragment BookData on Book {
   id
-  title
   author
+  totalRaters
+  totalStars
   plot
-  year
-  rating
+  title
+  bookmarkStatus
 }

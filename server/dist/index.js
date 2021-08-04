@@ -25,6 +25,7 @@ const ioredis_1 = __importDefault(require("ioredis"));
 const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
 const constants_1 = require("./utils/constants");
+const BookmarkStatusLoader_1 = require("./utils/BookmarkStatusLoader");
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     yield typeorm_1.createConnection({
         type: "postgres",
@@ -65,6 +66,7 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
         context: ({ req, res }) => ({
             req,
             res,
+            bookmarkStatusLoader: BookmarkStatusLoader_1.bookmarkStatusLoader(),
         }),
     });
     yield apolloServer.start();

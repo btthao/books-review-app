@@ -25,8 +25,8 @@ export class BookReturn {
   @Field(() => [Error], { nullable: true })
   errors?: Error[];
 
-  @Field(() => Boolean, { nullable: true })
-  book?: Boolean;
+  @Field(() => Book, { nullable: true })
+  book?: Book;
 }
 
 @ObjectType()
@@ -36,4 +36,13 @@ export class Pagination {
 
   @Field()
   moreBooks: boolean;
+}
+
+@ObjectType()
+export class UserBooks {
+  @Field(() => [Book], { nullable: true })
+  booksAdded?: Book[];
+
+  @Field(() => [Book], { nullable: true })
+  bookmarks?: Book[];
 }

@@ -10,25 +10,99 @@ import {
   Root,
   UseMiddleware,
 } from "type-graphql";
-import { getConnection } from "typeorm";
+import { getConnection, getRepository } from "typeorm";
 import { Book } from "../entities/Book";
 import { BookInput } from "../utils/Inputs";
 import { isAuth } from "../utils/isAuth";
 import { BookReturn, Error, Pagination } from "../utils/Return";
+import { Rating } from "../entities/Rating";
+import { isPoster } from "../utils/isPoster";
+import { User } from "../entities/User";
 //import { User } from "../entities/User";
 
 @Resolver(Book)
 export class BookResolver {
-  @FieldResolver(() => String)
-  plotSnippet(@Root() root: Book) {
-    return root.plot.slice(0, 100);
+  @FieldResolver(() => Boolean, { nullable: true })
+  async bookmarkStatus(
+    @Root() book: Book,
+    @Ctx() { req, bookmarkStatusLoader }: CtxTypes
+  ) {
+    if (!req.session.userId) {
+      return null;
+    }
+
+    const bookmarked = await bookmarkStatusLoader.load({
+      bookId: book.id,
+      userId: req.session.userId,
+    });
+
+    return bookmarked;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async rate(
+    @Arg("bookId", () => Int) bookId: number,
+    @Arg("value", () => Int) value: number,
+    @Ctx() { req }: CtxTypes
+  ): Promise<boolean> {
+    const hasRated = await Rating.findOne({
+      where: { bookId, userId: req.session.userId },
+    });
+
+    if (!hasRated) {
+      // User never rated this book
+      await Rating.create({
+        bookId,
+        userId: req.session.userId,
+        value,
+      }).save();
+
+      await getConnection()
+        .createQueryBuilder()
+        .update(Book)
+        .set({
+          totalStars: () => `"totalStars" + ${value}`,
+          totalRaters: () => `"totalRaters" + 1`,
+        })
+        .where("id = :bookId", {
+          bookId,
+        })
+        .execute();
+    } else if (hasRated.value !== value) {
+      // user has rated before, now update
+      await getConnection()
+        .createQueryBuilder()
+        .update(Rating)
+        .set({ value })
+        .where('"userId" = :userId', {
+          userId: req.session.userId,
+        })
+        .andWhere('"bookId" = :bookId', {
+          bookId,
+        })
+        .execute();
+
+      await getConnection()
+        .createQueryBuilder()
+        .update(Book)
+        .set({
+          totalStars: () => `"totalStars" - ${hasRated.value} + ${value}`,
+        })
+        .where("id = :bookId", {
+          bookId,
+        })
+        .execute();
+    }
+
+    return true;
   }
 
   @Query(() => Pagination)
   async getBooks(
+    @Arg("limit", () => Int) limit: number,
     @Arg("cursor", () => Int, { nullable: true }) cursor: number
   ): Promise<Pagination> {
-    const limit = 4;
     const booksToShow = getConnection()
       .getRepository(Book)
       .createQueryBuilder("book")
@@ -49,7 +123,7 @@ export class BookResolver {
 
   @Query(() => Book, { nullable: true })
   getBook(@Arg("id", () => Int) id: number): Promise<Book | undefined> {
-    return Book.findOne(id);
+    return Book.findOne(id, { relations: ["poster", "ratedBy"] });
   }
 
   @Mutation(() => BookReturn)
@@ -83,14 +157,15 @@ export class BookResolver {
       .of(book.id)
       .set(req.session.userId);
 
-    return { book: true };
+    return { book };
   }
 
-  @Mutation(() => Book)
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth, isPoster)
   async editPlot(
     @Arg("id", () => Int) id: number,
     @Arg("plot") plot: string
-  ): Promise<Book> {
+  ): Promise<Boolean> {
     const result = await getConnection()
       .createQueryBuilder()
       .update(Book)
@@ -100,13 +175,52 @@ export class BookResolver {
       })
       .returning("*")
       .execute();
-
-    return result.raw[0];
+    return true;
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAuth, isPoster)
   async deleteBook(@Arg("id", () => Int) id: number): Promise<boolean> {
+    await getConnection().query(
+      `
+    delete
+    from user_bookmarks_book b
+    where b."bookId" = $1
+    `,
+      [id]
+    );
     await Book.delete({ id });
+
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async bookmark(
+    @Arg("id", () => Int) id: number,
+    @Ctx() { req }: CtxTypes
+  ): Promise<boolean> {
+    await getConnection()
+      .createQueryBuilder()
+      .relation(User, "bookmarks")
+      .of(req.session.userId)
+      .add(id);
+
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async removeBookmark(
+    @Arg("id", () => Int) id: number,
+    @Ctx() { req }: CtxTypes
+  ): Promise<boolean> {
+    await getConnection()
+      .createQueryBuilder()
+      .relation(User, "bookmarks")
+      .of(req.session.userId)
+      .remove(id);
+
     return true;
   }
 }
