@@ -8,6 +8,7 @@ import Modal from "./Modal";
 import { Formik, Form } from "formik";
 import Input from "./Input";
 import { updateCacheAfterEdit } from "../utils/updateCache";
+
 interface EditBookProps {
   id: number;
   currentPlot: string;
@@ -28,10 +29,8 @@ const EditBook: React.FC<EditBookProps> = ({ id, currentPlot }) => {
       validate={(values) => {
         const errors = {};
         for (const field in values) {
-          if (typeof values[field] === "string") {
-            if (values[field].trim().length == 0) {
-              errors[field] = "This field can't be empty.";
-            }
+          if (values[field].trim().length == 0) {
+            errors[field] = "This field can't be empty.";
           }
         }
         return errors;
@@ -83,6 +82,7 @@ const EditBook: React.FC<EditBookProps> = ({ id, currentPlot }) => {
             update: (cache) => {
               router.push("/");
               cache.evict({ id: "Book:" + id });
+              cache.evict({ fieldName: "getBooks:{}" });
             },
           });
         }}
@@ -93,7 +93,7 @@ const EditBook: React.FC<EditBookProps> = ({ id, currentPlot }) => {
   );
 
   return (
-    <div>
+    <>
       <div className="text-sm my-3 text-gray-500 underline ">
         <span
           className="hover:text-gray-200 cursor-pointer"
@@ -120,10 +120,10 @@ const EditBook: React.FC<EditBookProps> = ({ id, currentPlot }) => {
             setShowModal(false), setModalContent(null);
           }}
         >
-          <div>{modalContent}</div>
+          {modalContent}
         </Modal>
       )}
-    </div>
+    </>
   );
 };
 

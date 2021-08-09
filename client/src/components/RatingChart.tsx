@@ -1,4 +1,4 @@
-import { Bar, Doughnut } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import "chartjs-plugin-datalabels";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
@@ -7,16 +7,21 @@ const chartDatas = (ratings: number[]) => {
     labels: ["5 ♥", "4 ♥", "3 ♥", "2 ♥", "1 ♥"],
     datasets: [
       {
-        //data: [12000, 4455, 22222, 4490, 245],
         data: ratings,
         backgroundColor: [
-          "#046c5cab",
-          "#41ae9179",
-          "#81bfac7f",
-          "#df8d987a",
-          "#e469797b",
+          "#10a38dcc",
+          "#5bc0a5ab",
+          "#a6dfce93",
+          "#ecafb779",
+          "#ec84927a",
         ],
-        borderColor: ["#048f7a", "#36c19c", "#81bfac", "#df8d98", "#e46979"],
+        borderColor: [
+          "#037261",
+          "#36c19cd2",
+          "#81bfacdf",
+          "#d8a0a8be",
+          "#eb7585c5",
+        ],
         borderWidth: 1.5,
         categoryPercentage: 1.0,
         barPercentage: 0.5,
@@ -43,7 +48,7 @@ const options = {
         drawBorder: false,
       },
       ticks: {
-        color: "#d3d0d0",
+        color: "#b9c2c0",
         autoSkip: false,
         font: {
           size: () => {
@@ -75,7 +80,7 @@ const options = {
     },
     title: {
       display: true,
-      color: "#dedada",
+      color: "#b9c2c0",
       text: "Users' ratings",
       font: {
         size: 16,
@@ -83,7 +88,7 @@ const options = {
     },
     datalabels: {
       align: "end",
-      color: "#dedada",
+      color: "#a19fa0",
       anchor: "end",
       offset: 7,
       font: () => {
@@ -96,7 +101,11 @@ const options = {
   },
 };
 
-const RatingChart = ({ data }) => (
+interface RatingChartProps {
+  data: number[];
+}
+
+const RatingChart: React.FC<RatingChartProps> = ({ data }) => (
   <Bar plugins={[ChartDataLabels]} data={chartDatas(data)} options={options} />
 );
 

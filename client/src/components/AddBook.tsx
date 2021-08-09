@@ -1,24 +1,20 @@
-import { Formik, Form } from "formik";
+import { useApolloClient } from "@apollo/client";
+import { Form, Formik } from "formik";
 import React from "react";
-import {
-  useCreateBookMutation,
-  useMeQuery,
-  GetUserBooksQuery,
-} from "../generated/graphql";
+import { useCreateBookMutation, useMeQuery } from "../generated/graphql";
 import { formErrors } from "../utils/formErrors";
 import { updateCacheAfterCreateBook } from "../utils/updateCache";
 import { yearList } from "../utils/yearList";
 import Button from "./Button";
 import Input from "./Input";
-import { apolloClient } from "../utils/withApollo";
-import { useApolloClient } from "@apollo/client";
+
 interface AddBookProps {
   onClick: () => void;
 }
 
 const AddBook: React.FC<AddBookProps> = ({ onClick }) => {
   const [createBook] = useCreateBookMutation();
-  const { data, loading } = useMeQuery();
+  const { data: MeData } = useMeQuery();
   const client = useApolloClient();
   return (
     <div className=" w-full  p-4  ">
@@ -54,7 +50,7 @@ const AddBook: React.FC<AddBookProps> = ({ onClick }) => {
           }
 
           if (typeof values.year == "string") {
-            values.year = parseInt(values.year, 10);
+            values.year = parseInt(values.year);
           }
 
           const response = await createBook({
@@ -67,7 +63,7 @@ const AddBook: React.FC<AddBookProps> = ({ onClick }) => {
           if (response.data?.createBook.book) {
             onClick();
             updateCacheAfterCreateBook(
-              data?.me?.id,
+              MeData?.me?.id,
               response.data?.createBook.book.id,
               client
             );
@@ -80,21 +76,23 @@ const AddBook: React.FC<AddBookProps> = ({ onClick }) => {
           <Form className="">
             <Input name="title" placeholder="Book title" />
             <Input name="author" placeholder="Author" />
-            <Input name="plot" placeholder="Tell us something" as="textarea" />
+            <Input
+              name="plot"
+              placeholder="Tell us something about this book..."
+              as="textarea"
+            />
             <Input
               name="year"
               label="Publication year"
               as="select"
               options={yearList}
             />
-            <div className="mt-6  m-auto">
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                text="Add Book"
-                className="bg-teal-400"
-              />
-            </div>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              text="Add Book"
+              className="bg-teal-400 mt-6 rounded-md"
+            />
           </Form>
         )}
       </Formik>

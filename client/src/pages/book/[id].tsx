@@ -1,29 +1,22 @@
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import Layout from "../../components/Layout";
-import {
-  useDeleteBookMutation,
-  useGetBookQuery,
-  useMeQuery,
-  useRateBookMutation,
-} from "../../generated/graphql";
-import withApollo from "../../utils/withApollo";
 import Rating from "react-rating";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-import RatingChart from "../../components/RatingChart";
-import { generateData } from "../../utils/chartData";
-import LocalLibraryIcon from "@material-ui/icons/LocalLibrary";
-import NextLink from "next/link";
-import Modal from "../../components/Modal";
-import RateBook from "../../components/RateBook";
-import EditBook from "../../components/EditBook";
-import BookmarkIcon from "@material-ui/icons/Bookmark";
 import Bookmark from "../../components/Bookmark";
-interface BookPageProps {}
+import EditBook from "../../components/EditBook";
+import Layout from "../../components/Layout";
+import Modal from "../../components/Modal";
+import NotExist from "../../components/NotExist";
+import RateBook from "../../components/RateBook";
+import RatingChart from "../../components/RatingChart";
+import { useGetBookQuery, useMeQuery } from "../../generated/graphql";
+import { generateData } from "../../utils/chartData";
+import withApollo from "../../utils/withApollo";
 
-const BookPage: React.FC<BookPageProps> = ({}) => {
+const BookPage: React.FC = () => {
   const router = useRouter();
-  const [showPoster, setShowPoster] = useState<any>(null);
+  const [showPoster, setShowPoster] = useState<JSX.Element>(null);
   const bookId =
     typeof router.query.id == "string" ? parseInt(router.query.id) : -404;
   const { data: MeData, loading: MeLoading } = useMeQuery();
@@ -40,7 +33,6 @@ const BookPage: React.FC<BookPageProps> = ({}) => {
     id,
     plot,
     poster,
-    ratedBy,
     title,
     year,
     totalRaters,
@@ -55,8 +47,10 @@ const BookPage: React.FC<BookPageProps> = ({}) => {
 
   useEffect(() => {
     if (!MeLoading && poster) {
-      if (MeData?.me?.id == poster?.id) {
-        setShowPoster(<p>You added this book</p>);
+      if (MeData?.me?.id == poster.id) {
+        setShowPoster(
+          <p className="text-gray-500 font-medium">You added this book</p>
+        );
       } else {
         setShowPoster(
           <p className="text-gray-500 font-medium">
@@ -76,10 +70,14 @@ const BookPage: React.FC<BookPageProps> = ({}) => {
 
   return (
     <Layout>
-      {!loading && !data?.getBook ? (
-        <div>no book</div>
+      {!data?.getBook ? (
+        <NotExist>
+          <div>
+            Oops! Looks like this book doesn&apos;t exist or has been deleted.
+          </div>
+        </NotExist>
       ) : (
-        <div className="relative  py-4 px-6 w-full max-w-3xl m-auto">
+        <div className="relative py-4 px-6 w-full max-w-3xl m-auto">
           {/* general info */}
 
           <h1 className="font-bold text-3xl my-2 text-rose-300 ">
@@ -94,11 +92,13 @@ const BookPage: React.FC<BookPageProps> = ({}) => {
           {showPoster}
 
           <p className="my-2 text-white">{plot}</p>
+
           {MeData?.me?.id == poster?.id && (
             <EditBook id={id} currentPlot={plot} />
           )}
+
           <button
-            className="mt-10 flex sm:hover:underline text-rose-300 font-semibold"
+            className="mt-10 sm:hover:underline text-rose-300 font-semibold"
             onClick={() => setShowModal(true)}
           >
             Rate book
@@ -107,8 +107,8 @@ const BookPage: React.FC<BookPageProps> = ({}) => {
           {showModal && (
             <Modal onClick={() => setShowModal(false)}>
               <RateBook
-                userId={MeData?.me?.id}
                 bookId={id}
+                userId={MeData?.me?.id}
                 onClick={() => setShowModal(false)}
                 currentVote={voteStatus}
               />

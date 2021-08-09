@@ -97,13 +97,12 @@ let BookResolver = class BookResolver {
         return __awaiter(this, void 0, void 0, function* () {
             const booksToShow = typeorm_1.getConnection()
                 .getRepository(Book_1.Book)
-                .createQueryBuilder("book")
-                .orderBy("id", "DESC")
-                .take(limit + 1);
+                .createQueryBuilder()
+                .orderBy("id", "DESC");
             if (cursor) {
                 booksToShow.where("id < :cursor", { cursor });
             }
-            const books = yield booksToShow.getMany();
+            const books = yield booksToShow.take(limit + 1).getMany();
             return {
                 moreBooks: books.length == limit + 1,
                 books: books.slice(0, limit),
@@ -139,14 +138,13 @@ let BookResolver = class BookResolver {
     }
     editPlot(id, plot) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield typeorm_1.getConnection()
+            yield typeorm_1.getConnection()
                 .createQueryBuilder()
                 .update(Book_1.Book)
                 .set({ plot })
                 .where("id = :id", {
                 id,
             })
-                .returning("*")
                 .execute();
             return true;
         });

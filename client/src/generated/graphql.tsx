@@ -311,9 +311,6 @@ export type GetBookQuery = (
     & { ratedBy?: Maybe<Array<(
       { __typename?: 'Rating' }
       & Pick<Rating, 'value' | 'userId' | 'bookId'>
-    )>>, bookmarkedBy?: Maybe<Array<(
-      { __typename?: 'User' }
-      & Pick<User, 'id'>
     )>>, poster: (
       { __typename?: 'User' }
       & Pick<User, 'username' | 'id'>
@@ -712,9 +709,6 @@ export const GetBookDocument = gql`
       value
       userId
       bookId
-    }
-    bookmarkedBy {
-      id
     }
     poster {
       username

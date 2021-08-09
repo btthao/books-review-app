@@ -1,18 +1,15 @@
-import { ApolloCache, ApolloClient, useApolloClient } from "@apollo/client";
+import { ApolloCache, ApolloClient } from "@apollo/client";
+import gql from "graphql-tag";
 import {
   Book,
   BookmarkMutation,
   EditPlotMutation,
+  GetUserBooksDocument,
+  GetUserBooksQuery,
   RateBookMutation,
   Rating,
   RemoveBookmarkMutation,
-  GetUserBooksDocument,
-  GetUserBooksQuery,
-  BookDataFragment,
-  CreateBookMutation,
 } from "../generated/graphql";
-import gql from "graphql-tag";
-// import { apolloClient } from "../utils/withApollo";
 
 export const updateCacheAfterVote = (
   value: number,
@@ -20,7 +17,7 @@ export const updateCacheAfterVote = (
   bookId: number,
   currentVote: number,
   cache: ApolloCache<RateBookMutation>
-) => {
+): void => {
   if (currentVote && value == currentVote) return;
 
   const data = cache.readFragment<{
@@ -37,8 +34,6 @@ export const updateCacheAfterVote = (
       }
     `,
   });
-
-  console.log(data);
 
   if (data && !currentVote) {
     cache.writeFragment({
@@ -89,11 +84,11 @@ export const updateCacheAfterEdit = (
   plot: string,
   bookId: number,
   cache: ApolloCache<EditPlotMutation>
-) => {
+): void => {
   cache.writeFragment({
     id: "Book:" + bookId,
     fragment: gql`
-      fragment __ on Book {
+      fragment plot on Book {
         plot
       }
     `,
@@ -103,13 +98,12 @@ export const updateCacheAfterEdit = (
   });
 };
 
-// update userbooks
 export const updateCacheAfterBookmark = (
   userId: number,
   bookmarkStatus: boolean,
   bookId: number,
   cache: ApolloCache<RemoveBookmarkMutation | BookmarkMutation>
-) => {
+): void => {
   // update on book first
   const newBookmarkRef = cache.writeFragment({
     id: "Book:" + bookId,
@@ -138,7 +132,7 @@ export const updateCacheAfterBookmark = (
       fields: {
         bookmarks(existingBooks, { readField }) {
           return existingBooks.filter(
-            (book) => readField("id", book) !== bookId
+            (book: Book) => readField("id", book) !== bookId
           );
         },
       },
@@ -147,7 +141,7 @@ export const updateCacheAfterBookmark = (
     cache.modify({
       id: cache.identify(data.getUserBooks),
       fields: {
-        bookmarks(existingBooks, { readField }) {
+        bookmarks(existingBooks) {
           return [...existingBooks, newBookmarkRef];
         },
       },
@@ -158,8 +152,9 @@ export const updateCacheAfterBookmark = (
 export const updateCacheAfterCreateBook = (
   userId: number,
   bookId: number,
+  // eslint-disable-next-line @typescript-eslint/ban-types
   client: ApolloClient<object>
-) => {
+): void => {
   const data = client.readQuery<GetUserBooksQuery>({
     query: GetUserBooksDocument,
     variables: {
@@ -169,7 +164,7 @@ export const updateCacheAfterCreateBook = (
 
   if (!data) return;
 
-  const newBook = client.cache.writeFragment({
+  const newBookRef = client.cache.writeFragment({
     id: "Book:" + bookId,
     fragment: gql`
       fragment id on Book {
@@ -184,9 +179,8 @@ export const updateCacheAfterCreateBook = (
   client.cache.modify({
     id: client.cache.identify(data.getUserBooks),
     fields: {
-      booksAdded(existingBooks) {
-        console.log(existingBooks);
-        return [...existingBooks, newBook];
+      booksAdded(existingBooksRef) {
+        return [...existingBooksRef, newBookRef];
       },
     },
   });

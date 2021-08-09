@@ -1,19 +1,17 @@
-//import { Book as BookType } from "../generated/graphql";
 import Rating from "react-rating";
-import BookmarkIcon from "@material-ui/icons/Bookmark";
 import NextLink from "next/link";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import StarRateIcon from "@material-ui/icons/StarRate";
 import { BookDataFragment } from "../generated/graphql";
 import Bookmark from "./Bookmark";
+
 const Book: React.FC<BookDataFragment> = (props) => {
   const { author, title, plot, id, totalRaters, totalStars, bookmarkStatus } =
     props;
 
   return (
-    <div className="relative bg-lightgray border border-gray-700  rounded-md shadow-md pt-8 px-4 max-w-sm m-auto  w-full h-60">
+    <div className="relative bg-lightgray border border-gray-700  rounded-md shadow-md pt-8 px-4 max-w-sm m-auto w-full h-60">
       <NextLink href="/book/[id]" as={`/book/${id}`}>
-        <h1 className="text-xl cursor-pointer text-rose-300 line-clamp-1 hover:text-rose-400">
+        <h1 className="text-xl cursor-pointer text-rose-300 line-clamp-1 hover:text-rose-400 ">
           {title}
         </h1>
       </NextLink>
@@ -29,7 +27,7 @@ const Book: React.FC<BookDataFragment> = (props) => {
         quiet={true}
         initialRating={parseFloat((totalStars / totalRaters).toFixed(1))}
       />
-      <div className="absolute top-1 right-4">
+      <div className="absolute top-2 right-4">
         <Bookmark bookId={id} bookmarkStatus={bookmarkStatus} />
       </div>
     </div>

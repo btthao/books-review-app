@@ -1,9 +1,15 @@
 import { withApollo } from "next-apollo";
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  NormalizedCacheObject,
+} from "@apollo/client";
 import { NextPageContext } from "next";
-import { Book, Pagination } from "../generated/graphql";
+import { Pagination } from "../generated/graphql";
 
-export const apolloClient = (ctx: NextPageContext) =>
+export const apolloClient = (
+  ctx: NextPageContext
+): ApolloClient<NormalizedCacheObject> =>
   new ApolloClient({
     uri: "http://localhost:4000/graphql",
     credentials: "include",

@@ -1,6 +1,5 @@
 import { Book } from "../entities/Book";
 import { MiddlewareFn } from "type-graphql";
-import { getRepository } from "typeorm";
 import { CtxTypes } from "./CtxTypes";
 
 export const isPoster: MiddlewareFn<CtxTypes> = async (

@@ -23,25 +23,9 @@ export class UserResolver {
   async getUserBooks(
     @Arg("id", () => Int) id: number
   ): Promise<User | undefined> {
-    // const user = await User.findOne(id, {
-    //   relations: ["booksAdded", "bookmarks"],
-    // });
-    // console.log(user);
-
-    const user = await getRepository(User)
-      .createQueryBuilder("user")
-      .leftJoinAndSelect("user.booksAdded", "booksadded")
-      .leftJoinAndSelect("user.bookmarks", "bookmarks")
-      .where("user.id = :id", { id })
-      .getOne();
-
-    // const user = await getRepository(User)
-    //   .createQueryBuilder("user")
-    //   .leftJoinAndSelect("user.booksAdded", "booksadded")
-    //   .leftJoinAndSelect("user.bookmarks", "bookmarks")
-    //   .where("user.id = :id", { id })
-    //   .getOne();
-    console.log(user);
+    const user = await User.findOne(id, {
+      relations: ["booksAdded", "bookmarks"],
+    });
 
     return user;
   }
@@ -72,6 +56,7 @@ export class UserResolver {
     }
     req.session.userId = newUser?.id;
     return { user: newUser };
+    // done
   }
 
   @Mutation(() => LoginRegisterResponse)

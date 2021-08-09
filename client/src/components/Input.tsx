@@ -1,12 +1,11 @@
 import { ErrorMessage, Field, useField } from "formik";
 import React, { InputHTMLAttributes } from "react";
 
-// done
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
   name: string;
   as?: string;
   label?: string;
-  options?: any[];
+  options?: (string | number)[];
 };
 
 const Input: React.FC<InputProps> = ({ as, options, label, ...props }) => {

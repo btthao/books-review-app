@@ -16,9 +16,9 @@ interface BookmarkProps {
 const Bookmark: React.FC<BookmarkProps> = ({ bookmarkStatus, bookId }) => {
   const [bookmark] = useBookmarkMutation();
   const [removeBookmark] = useRemoveBookmarkMutation();
-  const { data, loading } = useMeQuery();
+  const { data } = useMeQuery();
   const [showModal, setShowModal] = useState(false);
-  // console.log(data);
+
   return (
     <>
       <BookmarkIcon

@@ -13,9 +13,6 @@ query GetBook($getBookId: Int!) {
       userId
       bookId
     }
-    bookmarkedBy {
-      id
-    }
     poster {
       username
       id

@@ -21,6 +21,9 @@ module.exports = {
             maxHeight: {
                 "3/4": "75%",
             },
+            inset: {
+                "1/12": "7%",
+            },
             minWidth: {
                 xxs: "280px",
             },

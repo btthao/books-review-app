@@ -37,6 +37,7 @@ export class BookResolver {
     });
 
     return bookmarked;
+    // done
   }
 
   @Mutation(() => Boolean)
@@ -96,6 +97,8 @@ export class BookResolver {
     }
 
     return true;
+
+    // done
   }
 
   @Query(() => Pagination)
@@ -105,25 +108,26 @@ export class BookResolver {
   ): Promise<Pagination> {
     const booksToShow = getConnection()
       .getRepository(Book)
-      .createQueryBuilder("book")
-      .orderBy("id", "DESC")
-      .take(limit + 1);
+      .createQueryBuilder()
+      .orderBy("id", "DESC");
 
     if (cursor) {
       booksToShow.where("id < :cursor", { cursor });
     }
 
-    const books = await booksToShow.getMany();
+    const books = await booksToShow.take(limit + 1).getMany();
 
     return {
       moreBooks: books.length == limit + 1,
       books: books.slice(0, limit),
     };
+    // done
   }
 
   @Query(() => Book, { nullable: true })
   getBook(@Arg("id", () => Int) id: number): Promise<Book | undefined> {
     return Book.findOne(id, { relations: ["poster", "ratedBy"] });
+    // done
   }
 
   @Mutation(() => BookReturn)
@@ -158,6 +162,7 @@ export class BookResolver {
       .set(req.session.userId);
 
     return { book };
+    // done
   }
 
   @Mutation(() => Boolean)
@@ -166,16 +171,16 @@ export class BookResolver {
     @Arg("id", () => Int) id: number,
     @Arg("plot") plot: string
   ): Promise<Boolean> {
-    const result = await getConnection()
+    await getConnection()
       .createQueryBuilder()
       .update(Book)
       .set({ plot })
       .where("id = :id", {
         id,
       })
-      .returning("*")
       .execute();
     return true;
+    // done
   }
 
   @Mutation(() => Boolean)

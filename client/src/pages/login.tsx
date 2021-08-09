@@ -9,7 +9,6 @@ import { useLoginMutation, useMeQuery } from "../generated/graphql";
 import { formErrors } from "../utils/formErrors";
 import withApollo from "../utils/withApollo";
 
-// done
 const Login: React.FC = () => {
   const router = useRouter();
   const [login] = useLoginMutation();

@@ -31,7 +31,6 @@ const Inputs_1 = require("../utils/Inputs");
 const argon2_1 = __importDefault(require("argon2"));
 const Return_1 = require("../utils/Return");
 const constants_1 = require("../utils/constants");
-const typeorm_1 = require("typeorm");
 let UserResolver = class UserResolver {
     me({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -43,13 +42,9 @@ let UserResolver = class UserResolver {
     }
     getUserBooks(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield typeorm_1.getRepository(User_1.User)
-                .createQueryBuilder("user")
-                .leftJoinAndSelect("user.booksAdded", "booksadded")
-                .leftJoinAndSelect("user.bookmarks", "bookmarks")
-                .where("user.id = :id", { id })
-                .getOne();
-            console.log(user);
+            const user = yield User_1.User.findOne(id, {
+                relations: ["booksAdded", "bookmarks"],
+            });
             return user;
         });
     }

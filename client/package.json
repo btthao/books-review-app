@@ -4,7 +4,8 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "gen": "graphql-codegen --config codegen.yml"
+        "gen": "graphql-codegen --config codegen.yml",
+        "lint": "eslint src/**/*.{ts,tsx}"
     },
     "dependencies": {
         "@apollo/client": "^3.3.21",
@@ -14,6 +15,7 @@
         "@types/react-vis": "^1.11.7",
         "chart.js": "^3.4.1",
         "chartjs-plugin-datalabels": "^2.0.0",
+        "eslint-visitor-keys": "^3.0.0",
         "formik": "^2.2.9",
         "graphql": "^15.5.1",
         "next": "latest",
@@ -30,7 +32,11 @@
         "@graphql-codegen/typescript": "^1.23.0",
         "@graphql-codegen/typescript-operations": "1.18.4",
         "@graphql-codegen/typescript-react-apollo": "2.3.1",
+        "@typescript-eslint/eslint-plugin": "^4.29.0",
+        "@typescript-eslint/parser": "^4.29.0",
         "autoprefixer": "^10.2.6",
+        "eslint": "^7.32.0",
+        "eslint-plugin-react": "^7.24.0",
         "postcss": "^8.3.5",
         "tailwindcss": "^2.2.4",
         "typescript": "^4.3.5"

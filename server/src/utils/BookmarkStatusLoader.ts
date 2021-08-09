@@ -1,4 +1,4 @@
-import DataLoader, { BatchLoadFn } from "dataloader";
+import DataLoader from "dataloader";
 import { User } from "../entities/User";
 
 type Input = {
@@ -6,6 +6,7 @@ type Input = {
   userId: number;
 };
 
+// done
 export const bookmarkStatusLoader = () =>
   new DataLoader<Input, boolean | null>(async (keys) => {
     const user = await User.findOne(keys[0].userId, {

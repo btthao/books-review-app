@@ -3,7 +3,6 @@ import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { useApolloClient } from "@apollo/client";
 
-//done
 const Nav: React.FC = () => {
   const { data, loading } = useMeQuery();
   const [logout] = useLogoutMutation();

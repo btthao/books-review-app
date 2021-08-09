@@ -2,12 +2,11 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import Book from "../../components/Book";
 import Layout from "../../components/Layout";
-import { useGetUserBooksQuery, useMeQuery } from "../../generated/graphql";
+import NotExist from "../../components/NotExist";
+import { useGetUserBooksQuery } from "../../generated/graphql";
 import withApollo from "../../utils/withApollo";
 
-interface UserPageProps {}
-
-const UserPage: React.FC<UserPageProps> = ({}) => {
+const UserPage: React.FC = () => {
   const router = useRouter();
   const userId =
     typeof router.query.id == "string" ? parseInt(router.query.id) : -1;
@@ -18,24 +17,20 @@ const UserPage: React.FC<UserPageProps> = ({}) => {
     },
   });
 
-  //console.log(data);
-
-  // if (loading) {
-  //   return null;
-  // }
+  if (loading) {
+    return null;
+  }
 
   return (
     <Layout>
       {!data?.getUserBooks ? (
-        <div className=" my-10">
-          <p className="text-center text-lg font-bold text-rose-500">
-            Oops! Looks like the user with this Id doesn't exist
-          </p>
-        </div>
+        <NotExist>
+          <div>Opps, looks like this user doesn&apos;t exist.</div>
+        </NotExist>
       ) : (
         <>
           <h1 className="text-center mt-10 mb-3 font-bold text-3xl sm:text-4xl text-teal-300">
-            {data?.getUserBooks?.username}'s List
+            {data?.getUserBooks?.username}&apos;s List
           </h1>
           <div className="m-auto sm:text-lg font-bold text-rose-300  w-max grid sm:grid-cols-2 gap-1 sm:gap-5 ">
             <button
