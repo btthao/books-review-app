@@ -25,12 +25,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserResolver = void 0;
+const argon2_1 = __importDefault(require("argon2"));
 const type_graphql_1 = require("type-graphql");
 const User_1 = require("../entities/User");
-const Inputs_1 = require("../utils/Inputs");
-const argon2_1 = __importDefault(require("argon2"));
-const Return_1 = require("../utils/Return");
 const constants_1 = require("../utils/constants");
+const Inputs_1 = require("../utils/Inputs");
+const Return_1 = require("../utils/Return");
 let UserResolver = class UserResolver {
     me({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -115,12 +115,6 @@ let UserResolver = class UserResolver {
             resolve(true);
         }));
     }
-    deleteUser(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield User_1.User.delete({ id });
-            return true;
-        });
-    }
 };
 __decorate([
     type_graphql_1.Query(() => User_1.User, { nullable: true }),
@@ -159,13 +153,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "logout", null);
-__decorate([
-    type_graphql_1.Mutation(() => Boolean),
-    __param(0, type_graphql_1.Arg("id", () => type_graphql_1.Int)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], UserResolver.prototype, "deleteUser", null);
 UserResolver = __decorate([
     type_graphql_1.Resolver(User_1.User)
 ], UserResolver);

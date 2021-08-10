@@ -31,7 +31,7 @@ export class User extends BaseEntity {
 
   @Field(() => [Book], { nullable: true })
   @OneToMany(() => Book, (book) => book.poster)
-  booksAdded: Book[];
+  booksAdded?: Book[];
 
   @Field(() => [Book], { nullable: true })
   @ManyToMany(() => Book, (book) => book.bookmarkedBy)

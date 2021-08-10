@@ -1,12 +1,10 @@
+import argon2 from "argon2";
 import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../entities/User";
-import { LoginRegisterInput } from "../utils/Inputs";
-import argon2 from "argon2";
-import { LoginRegisterResponse, UserBooks } from "../utils/Return";
-import { CtxTypes } from "../utils/CtxTypes";
 import { COOKIE_NAME } from "../utils/constants";
-import { createQueryBuilder, getRepository } from "typeorm";
-import { Book } from "src/entities/Book";
+import { CtxTypes } from "../utils/CtxTypes";
+import { LoginRegisterInput } from "../utils/Inputs";
+import { LoginRegisterResponse } from "../utils/Return";
 
 @Resolver(User)
 export class UserResolver {
@@ -16,7 +14,6 @@ export class UserResolver {
       return null;
     }
     return User.findOne(req.session.userId);
-    // done
   }
 
   @Query(() => User, { nullable: true })
@@ -56,7 +53,6 @@ export class UserResolver {
     }
     req.session.userId = newUser?.id;
     return { user: newUser };
-    // done
   }
 
   @Mutation(() => LoginRegisterResponse)
@@ -94,7 +90,6 @@ export class UserResolver {
     req.session.userId = user.id;
 
     return { user };
-    // done
   }
 
   @Mutation(() => Boolean)
@@ -111,12 +106,11 @@ export class UserResolver {
         resolve(true);
       })
     );
-    // done
   }
 
-  @Mutation(() => Boolean)
-  async deleteUser(@Arg("id", () => Int) id: number): Promise<boolean> {
-    await User.delete({ id });
-    return true;
-  }
+  // @Mutation(() => Boolean)
+  // async deleteUser(@Arg("id", () => Int) id: number): Promise<boolean> {
+  //   await User.delete({ id });
+  //   return true;
+  // }
 }

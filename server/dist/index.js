@@ -13,19 +13,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
-const typeorm_1 = require("typeorm");
-const path_1 = __importDefault(require("path"));
-const express_1 = __importDefault(require("express"));
-const cors_1 = __importDefault(require("cors"));
 const apollo_server_express_1 = require("apollo-server-express");
+const connect_redis_1 = __importDefault(require("connect-redis"));
+const cors_1 = __importDefault(require("cors"));
+const express_1 = __importDefault(require("express"));
+const express_session_1 = __importDefault(require("express-session"));
+const ioredis_1 = __importDefault(require("ioredis"));
+const path_1 = __importDefault(require("path"));
 const type_graphql_1 = require("type-graphql");
+const typeorm_1 = require("typeorm");
 const book_1 = require("./resolvers/book");
 const user_1 = require("./resolvers/user");
-const ioredis_1 = __importDefault(require("ioredis"));
-const express_session_1 = __importDefault(require("express-session"));
-const connect_redis_1 = __importDefault(require("connect-redis"));
-const constants_1 = require("./utils/constants");
 const BookmarkStatusLoader_1 = require("./utils/BookmarkStatusLoader");
+const constants_1 = require("./utils/constants");
 const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
     yield typeorm_1.createConnection({
         type: "postgres",

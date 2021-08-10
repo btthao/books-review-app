@@ -25,12 +25,12 @@ exports.BookResolver = void 0;
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const Book_1 = require("../entities/Book");
+const Rating_1 = require("../entities/Rating");
+const User_1 = require("../entities/User");
 const Inputs_1 = require("../utils/Inputs");
 const isAuth_1 = require("../utils/isAuth");
-const Return_1 = require("../utils/Return");
-const Rating_1 = require("../entities/Rating");
 const isPoster_1 = require("../utils/isPoster");
-const User_1 = require("../entities/User");
+const Return_1 = require("../utils/Return");
 let BookResolver = class BookResolver {
     bookmarkStatus(book, { req, bookmarkStatusLoader }) {
         return __awaiter(this, void 0, void 0, function* () {

@@ -1,4 +1,3 @@
-import { CtxTypes } from "../utils/CtxTypes";
 import {
   Arg,
   Ctx,
@@ -10,15 +9,15 @@ import {
   Root,
   UseMiddleware,
 } from "type-graphql";
-import { getConnection, getRepository } from "typeorm";
+import { getConnection } from "typeorm";
 import { Book } from "../entities/Book";
+import { Rating } from "../entities/Rating";
+import { User } from "../entities/User";
+import { CtxTypes } from "../utils/CtxTypes";
 import { BookInput } from "../utils/Inputs";
 import { isAuth } from "../utils/isAuth";
-import { BookReturn, Error, Pagination } from "../utils/Return";
-import { Rating } from "../entities/Rating";
 import { isPoster } from "../utils/isPoster";
-import { User } from "../entities/User";
-//import { User } from "../entities/User";
+import { BookReturn, Pagination } from "../utils/Return";
 
 @Resolver(Book)
 export class BookResolver {
@@ -37,7 +36,6 @@ export class BookResolver {
     });
 
     return bookmarked;
-    // done
   }
 
   @Mutation(() => Boolean)
@@ -97,8 +95,6 @@ export class BookResolver {
     }
 
     return true;
-
-    // done
   }
 
   @Query(() => Pagination)
@@ -121,13 +117,11 @@ export class BookResolver {
       moreBooks: books.length == limit + 1,
       books: books.slice(0, limit),
     };
-    // done
   }
 
   @Query(() => Book, { nullable: true })
   getBook(@Arg("id", () => Int) id: number): Promise<Book | undefined> {
     return Book.findOne(id, { relations: ["poster", "ratedBy"] });
-    // done
   }
 
   @Mutation(() => BookReturn)
@@ -162,7 +156,6 @@ export class BookResolver {
       .set(req.session.userId);
 
     return { book };
-    // done
   }
 
   @Mutation(() => Boolean)
@@ -180,7 +173,6 @@ export class BookResolver {
       })
       .execute();
     return true;
-    // done
   }
 
   @Mutation(() => Boolean)

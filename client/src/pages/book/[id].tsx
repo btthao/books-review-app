@@ -117,7 +117,9 @@ const BookPage: React.FC = () => {
 
           <small className="block text-sm text-teal-400 mt-5 mb-1">
             {totalRaters > 0
-              ? `Average points based on ${totalRaters} ratings`
+              ? `Average points based on ${totalRaters} ${
+                  totalRaters > 1 ? "ratings" : "rating"
+                }`
               : "No ratings yet"}
           </small>
 

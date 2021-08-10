@@ -1,21 +1,18 @@
 import "reflect-metadata";
-import { createConnection, createQueryBuilder, getRepository } from "typeorm";
-import path from "path";
-import express from "express";
-import cors from "cors";
 import { ApolloServer } from "apollo-server-express";
+import connectRedis from "connect-redis";
+import cors from "cors";
+import express from "express";
+import session from "express-session";
+import Redis from "ioredis";
+import path from "path";
 import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
 import { BookResolver } from "./resolvers/book";
 import { UserResolver } from "./resolvers/user";
-import Redis from "ioredis";
-import session from "express-session";
-import connectRedis from "connect-redis";
+import { bookmarkStatusLoader } from "./utils/BookmarkStatusLoader";
 import { COOKIE_NAME, __prod__ } from "./utils/constants";
 import { CtxTypes } from "./utils/CtxTypes";
-
-// import { User } from "./entities/User";
-import { Book } from "./entities/Book";
-import { bookmarkStatusLoader } from "./utils/BookmarkStatusLoader";
 
 const startServer = async () => {
   await createConnection({
@@ -25,25 +22,8 @@ const startServer = async () => {
     password: "qazwsx",
     logging: true,
     synchronize: true,
-    // migrations: [path.join(__dirname, "./migrations/*")],
     entities: [path.join(__dirname, "./entities/*")],
   });
-
-  // const user = await getRepository(User)
-  //   .createQueryBuilder("user")
-  //   .leftJoinAndSelect("user.booksAdded", "book")
-  //   .where("user.id = :id", { id: 75 })
-  //   .getOne();
-  // const book = await getRepository(Book)
-  //   .createQueryBuilder("book")
-  //   .leftJoinAndSelect("book.poster", "user")
-  //   .where("book.id = :id", { id: 53 })
-  //   .getOne();
-
-  // console.log(book);
-
-  //await Book.delete({});
-  // await User.delete({});
 
   const app = express();
   const RedisStore = connectRedis(session);
