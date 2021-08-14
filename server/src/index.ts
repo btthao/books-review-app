@@ -13,25 +13,30 @@ import { UserResolver } from "./resolvers/user";
 import { bookmarkStatusLoader } from "./utils/BookmarkStatusLoader";
 import { COOKIE_NAME, __prod__ } from "./utils/constants";
 import { CtxTypes } from "./utils/CtxTypes";
+require("dotenv").config();
 
 const startServer = async () => {
-  await createConnection({
+  const connection = await createConnection({
     type: "postgres",
-    database: "bookreviews",
-    username: "postgres",
-    password: "qazwsx",
+    url: process.env.DATABASE_URL,
     logging: true,
-    synchronize: true,
+    //synchronize: true,
+    migrations: [path.join(__dirname, "./migrations/*")],
     entities: [path.join(__dirname, "./entities/*")],
   });
 
+  //await connection.runMigrations();
+
   const app = express();
+
   const RedisStore = connectRedis(session);
-  const redis = new Redis();
+  const redis = new Redis(process.env.REDIS_URL);
+  app.set("proxy", 1);
 
   app.use(
     cors({
-      origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+      origin: process.env.CORS_ORIGIN,
+      // origin: ["http://localhost:3000", "https://studio.apollographql.com"],
       credentials: true,
     })
   );
@@ -48,9 +53,10 @@ const startServer = async () => {
         httpOnly: true,
         sameSite: "lax",
         secure: __prod__,
+        // domain
       },
       saveUninitialized: false,
-      secret: "kosmonextlevel",
+      secret: process.env.SESSION_SECRET as string,
       resave: false,
     })
   );
@@ -74,8 +80,8 @@ const startServer = async () => {
     cors: false,
   });
 
-  app.listen(4000, () => {
-    console.log("server started on localhost 4000");
+  app.listen(process.env.PORT, () => {
+    console.log(`server started on localhost ${process.env.PORT}`);
   });
 };
 
