@@ -10,7 +10,7 @@ import AddBook from "../components/AddBook";
 
 const Home: React.FC = () => {
   const fetchLimit = 12;
-  const { data, error, loading, fetchMore, refetch } = useGetBooksQuery({
+  const { data, error, loading, fetchMore } = useGetBooksQuery({
     variables: {
       getBooksLimit: fetchLimit,
     },
@@ -40,9 +40,6 @@ const Home: React.FC = () => {
           <AddBook
             onClick={() => {
               setShowModal(false);
-              refetch({
-                getBooksLimit: books.length,
-              });
             }}
           />
         </Modal>

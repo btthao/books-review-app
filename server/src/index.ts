@@ -25,7 +25,7 @@ const startServer = async () => {
     entities: [path.join(__dirname, "./entities/*")],
   });
 
-  //await connection.runMigrations();
+  await connection.runMigrations();
 
   const app = express();
 

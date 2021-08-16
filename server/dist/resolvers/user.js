@@ -25,12 +25,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserResolver = void 0;
-const argon2_1 = __importDefault(require("argon2"));
 const type_graphql_1 = require("type-graphql");
 const User_1 = require("../entities/User");
 const constants_1 = require("../utils/constants");
 const Inputs_1 = require("../utils/Inputs");
 const Return_1 = require("../utils/Return");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 let UserResolver = class UserResolver {
     me({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -51,7 +51,7 @@ let UserResolver = class UserResolver {
     registerUser(input, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             let newUser;
-            const hashedPw = yield argon2_1.default.hash(input.password);
+            const hashedPw = bcrypt_1.default.hashSync(input.password, 10);
             try {
                 newUser = yield User_1.User.create({
                     username: input.username,
@@ -89,7 +89,7 @@ let UserResolver = class UserResolver {
                     ],
                 };
             }
-            const valid = yield argon2_1.default.verify(user.password, input.password);
+            const valid = bcrypt_1.default.compareSync(input.password, user.password);
             if (!valid) {
                 return {
                     errors: [

@@ -4,7 +4,7 @@
     "port": 5432,
     "username": "postgres",
     "password": "qazwsx",
-    "database": "bookreviews",
+    "database": "allbooks",
     "entities": ["dist/entities/*.js"],
     "migrations": ["dist/migrations/*.js"]
 }

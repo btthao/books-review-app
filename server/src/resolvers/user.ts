@@ -1,10 +1,10 @@
-import argon2 from "argon2";
 import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import { User } from "../entities/User";
 import { COOKIE_NAME } from "../utils/constants";
 import { CtxTypes } from "../utils/CtxTypes";
 import { LoginRegisterInput } from "../utils/Inputs";
 import { LoginRegisterResponse } from "../utils/Return";
+import bcrypt from "bcrypt";
 
 @Resolver(User)
 export class UserResolver {
@@ -33,7 +33,7 @@ export class UserResolver {
     @Ctx() { req }: CtxTypes
   ): Promise<LoginRegisterResponse> {
     let newUser;
-    const hashedPw = await argon2.hash(input.password);
+    const hashedPw = bcrypt.hashSync(input.password, 10);
     try {
       newUser = await User.create({
         username: input.username,
@@ -75,7 +75,8 @@ export class UserResolver {
       };
     }
 
-    const valid = await argon2.verify(user.password, input.password);
+    const valid = bcrypt.compareSync(input.password, user.password);
+
     if (!valid) {
       return {
         errors: [
