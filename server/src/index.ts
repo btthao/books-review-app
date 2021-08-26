@@ -31,12 +31,11 @@ const startServer = async () => {
 
   const RedisStore = connectRedis(session);
   const redis = new Redis(process.env.REDIS_URL);
-  app.set("proxy", 1);
+  app.set("trust proxy", 1);
 
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,
-      // origin: ["http://localhost:3000", "https://studio.apollographql.com"],
       credentials: true,
     })
   );
@@ -53,7 +52,7 @@ const startServer = async () => {
         httpOnly: true,
         sameSite: "lax",
         secure: __prod__,
-        // domain
+        domain: __prod__ ? ".vienvien.online" : undefined,
       },
       saveUninitialized: false,
       secret: process.env.SESSION_SECRET as string,

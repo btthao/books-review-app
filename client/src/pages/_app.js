@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import "tailwindcss/tailwind.css";
 import "../utils/index.css";
 import "chartjs-plugin-datalabels";

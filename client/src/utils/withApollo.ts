@@ -6,12 +6,12 @@ import {
 } from "@apollo/client";
 import { NextPageContext } from "next";
 import { Pagination } from "../generated/graphql";
-
+console.log("apiii", process.env.NEXT_PUBLIC_API_URL);
 export const apolloClient = (
   ctx: NextPageContext
 ): ApolloClient<NormalizedCacheObject> =>
   new ApolloClient({
-    uri: "http://localhost:4000/graphql",
+    uri: process.env.NEXT_PUBLIC_API_URL,
     credentials: "include",
     headers: {
       cookie:
