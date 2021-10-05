@@ -79,8 +79,10 @@ const startServer = async () => {
     cors: false,
   });
 
-  app.listen(process.env.PORT, () => {
-    console.log(`server started on localhost ${process.env.PORT}`);
+  const port = process.env.PORT || 4000;
+
+  app.listen(port, () => {
+    console.log(`server started on localhost ${port}`);
   });
 };
 

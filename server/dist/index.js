@@ -55,6 +55,7 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
             httpOnly: true,
             sameSite: "lax",
             secure: constants_1.__prod__,
+            domain: constants_1.__prod__ ? ".vienvien.online" : undefined,
         },
         saveUninitialized: false,
         secret: process.env.SESSION_SECRET,
@@ -75,8 +76,9 @@ const startServer = () => __awaiter(void 0, void 0, void 0, function* () {
         app,
         cors: false,
     });
-    app.listen(process.env.PORT, () => {
-        console.log(`server started on localhost ${process.env.PORT}`);
+    const port = process.env.PORT || 4000;
+    app.listen(port, () => {
+        console.log(`server started on localhost ${port}`);
     });
 });
 startServer().catch((err) => console.error(err));
