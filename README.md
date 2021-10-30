@@ -12,7 +12,7 @@
 
 - GraphQL
 - Apollo client, apollo server express
-- PostgresSQL
+- PostgreSQL
 - TypeORM
 - Redis
 - React
