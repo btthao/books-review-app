@@ -19,6 +19,7 @@
 - TypeScript
 - Next.js
 - TypeGraphQL
-- Node.js, Express
+- Express
+- Chart.js
 - TailwindCSS
 - Formik
