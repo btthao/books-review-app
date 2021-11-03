@@ -12,13 +12,14 @@
 
 - GraphQL
 - Apollo client, apollo server express
-- PostgresSQL
+- PostgreSQL
 - TypeORM
 - Redis
 - React
 - TypeScript
 - Next.js
 - TypeGraphQL
-- Node.js, Express
+- Express
+- Chart.js
 - TailwindCSS
 - Formik
