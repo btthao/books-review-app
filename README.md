@@ -20,6 +20,7 @@
 - Next.js
 - TypeGraphQL
 - Express
+- Docker
 - Chart.js
 - TailwindCSS
 - Formik
